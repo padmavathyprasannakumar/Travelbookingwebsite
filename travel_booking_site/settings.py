@@ -65,6 +65,8 @@ CSRF_TRUSTED_ORIGINS = env_list(
 # --------------------------------------------------
 
 INSTALLED_APPS = [
+    "cloudinary_storage",
+    "cloudinary",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -178,8 +180,17 @@ ROOT_STATIC_DIR = BASE_DIR / "static"
 if ROOT_STATIC_DIR.exists():
     STATICFILES_DIRS.append(ROOT_STATIC_DIR)
 
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
+}
+
 # Django 6 compatible staticfiles storage setting
 STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
