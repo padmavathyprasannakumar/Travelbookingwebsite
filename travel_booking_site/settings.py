@@ -1,6 +1,6 @@
 """
 Django settings for travel_booking_site project.
-Render deployment ready.
+Render deployment ready with Cloudinary media storage.
 """
 
 import os
@@ -65,8 +65,11 @@ CSRF_TRUSTED_ORIGINS = env_list(
 # --------------------------------------------------
 
 INSTALLED_APPS = [
+    # Cloudinary media storage
     "cloudinary_storage",
     "cloudinary",
+
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -180,22 +183,34 @@ ROOT_STATIC_DIR = BASE_DIR / "static"
 if ROOT_STATIC_DIR.exists():
     STATICFILES_DIRS.append(ROOT_STATIC_DIR)
 
+
+# --------------------------------------------------
+# Cloudinary media storage
+# --------------------------------------------------
+# Add these in Render Environment:
+# CLOUDINARY_CLOUD_NAME
+# CLOUDINARY_API_KEY
+# CLOUDINARY_API_SECRET
+
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
     "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
     "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
 }
 
-# Django 6 compatible staticfiles storage setting
+
+# --------------------------------------------------
+# Django 6 storage configuration
+# --------------------------------------------------
+# default = user/admin uploaded media files
+# staticfiles = CSS/JS/images from static folders
+
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
@@ -203,9 +218,11 @@ STORAGES = {
 # --------------------------------------------------
 # Media files
 # --------------------------------------------------
+# On Render Free, uploaded files should go to Cloudinary.
+# MEDIA_ROOT is kept only for local fallback compatibility.
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.environ.get("MEDIA_ROOT", BASE_DIR / "media")
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", str(BASE_DIR / "media"))
 
 
 # --------------------------------------------------
@@ -259,6 +276,7 @@ if not DEBUG:
 
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = "DENY"
+
 
 # --------------------------------------------------
 # Logging - show errors in Render logs
