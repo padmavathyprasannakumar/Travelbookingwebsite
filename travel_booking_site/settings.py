@@ -184,13 +184,15 @@ if ROOT_STATIC_DIR.exists():
     STATICFILES_DIRS.append(ROOT_STATIC_DIR)
 
 
+# WhiteNoise fallback: serve files directly from app static folders too.
+# This fixes /static/css/base.css Not Found on Render Free.
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
+
+
 # --------------------------------------------------
 # Cloudinary media storage
 # --------------------------------------------------
-# Add these in Render Environment:
-# CLOUDINARY_CLOUD_NAME
-# CLOUDINARY_API_KEY
-# CLOUDINARY_API_SECRET
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
@@ -202,13 +204,6 @@ CLOUDINARY_STORAGE = {
 # --------------------------------------------------
 # Django 6 storage configuration
 # --------------------------------------------------
-# default = admin/user uploaded images, stored in Cloudinary
-# staticfiles = CSS/JS static files, collected normally
-#
-# IMPORTANT:
-# We are using StaticFilesStorage instead of WhiteNoise compressed storage
-# because your Render build was failing on static file compression.
-# WhiteNoise middleware can still serve these collected static files.
 
 STORAGES = {
     "default": {
@@ -219,7 +214,6 @@ STORAGES = {
     },
 }
 
-# Compatibility for django-cloudinary-storage package
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
