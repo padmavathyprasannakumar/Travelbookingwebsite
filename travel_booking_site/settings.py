@@ -214,6 +214,9 @@ STORAGES = {
     },
 }
 
+# Compatibility for django-cloudinary-storage collectstatic command
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # --------------------------------------------------
 # Media files
