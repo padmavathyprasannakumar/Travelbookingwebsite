@@ -1,6 +1,6 @@
 """
 Django settings for travel_booking_site project.
-Render deployment ready with Cloudinary media storage.
+Render Free deployment ready with Cloudinary media storage.
 """
 
 import os
@@ -85,7 +85,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 
-    # WhiteNoise for static files on Render
+    # WhiteNoise serves static files on Render
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -202,21 +202,27 @@ CLOUDINARY_STORAGE = {
 # --------------------------------------------------
 # Django 6 storage configuration
 # --------------------------------------------------
-# default = user/admin uploaded media files
-# staticfiles = CSS/JS/images from static folders
+# default = admin/user uploaded images, stored in Cloudinary
+# staticfiles = CSS/JS static files, collected normally
+#
+# IMPORTANT:
+# We are using StaticFilesStorage instead of WhiteNoise compressed storage
+# because your Render build was failing on static file compression.
+# WhiteNoise middleware can still serve these collected static files.
 
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
-# Compatibility for django-cloudinary-storage collectstatic command
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+# Compatibility for django-cloudinary-storage package
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
 
 # --------------------------------------------------
 # Media files
