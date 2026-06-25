@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Travel Details{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/travel_detail.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="detail-page">
+    <article class="detail-card">
+        {% if service.image %}<img src="{{ service.image.url }}" alt="{{ service.title }}">{% else %}<div class="image-fallback">{{ service.get_service_type_display }}</div>{% endif %}
+        <div class="detail-body">
+            <span class="type-badge">{{ service.get_service_type_display }}</span>
+            <h1>{{ service.source }} → {{ service.destination }}</h1>
+            <h2>{{ service.operator_name }}</h2>
+            <p>{{ service.description|default:'Comfortable trip with instant PNR generation and dynamic seat selection.' }}</p>
+            <div class="detail-grid">
+                <div><small>Departure</small><strong>{{ service.departure_date }} · {{ service.departure_time }}</strong></div>
+                <div><small>Arrival</small><strong>{{ service.arrival_date }} · {{ service.arrival_time }}</strong></div>
+                <div><small>Duration</small><strong>{{ service.duration_label }}</strong></div>
+                <div><small>Available Seats</small><strong>{{ available_count }}</strong></div>
+            </div>
+            <div class="action-row">
+                <div class="price">₹{{ service.base_price }} <small>per traveller</small></div>
+                <a class="primary-btn" href="{% url 'seat_selection' service.pk %}">Select Seats</a>
+            </div>
+        </div>
+    </article>
+</section>
+{% endblock %}

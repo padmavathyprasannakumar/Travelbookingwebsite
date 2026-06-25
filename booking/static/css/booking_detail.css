@@ -1,0 +1,141 @@
+.ticket-page {
+    padding: 48px 6%;
+    background: #f5f8fc
+}
+
+.ticket-card {
+    width: min(920px, 100%);
+    margin: auto;
+    background: #fff;
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    overflow: hidden
+}
+
+.ticket-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: #fff;
+    padding: 30px
+}
+
+.ticket-head small {
+    letter-spacing: .12em;
+    font-weight: 900;
+    color: #dbeafe
+}
+
+.ticket-head h1 {
+    font-size: clamp(34px, 6vw, 58px);
+    margin: 6px 0 0
+}
+
+.ticket-body {
+    padding: 30px
+}
+
+.ticket-body h2 {
+    font-size: 30px;
+    margin: 0 0 8px
+}
+
+.ticket-body p {
+    color: var(--muted);
+    line-height: 1.7
+}
+
+.ticket-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 24px 0
+}
+
+.ticket-grid div,
+.payment-box div {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px
+}
+
+.ticket-grid small,
+.payment-box small {
+    display: block;
+    color: var(--muted);
+    font-weight: 800;
+    margin-bottom: 6px
+}
+
+.ticket-grid strong,
+.payment-box strong {
+    font-size: 18px;
+    color: var(--ink);
+    overflow-wrap: anywhere
+}
+
+.payment-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0
+}
+
+.payment-box strong {
+    color: var(--success)
+}
+
+.special {
+    background: #fff8e9;
+    border: 1px solid #ffe3b0;
+    border-radius: 16px;
+    padding: 14px
+}
+
+.ticket-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap
+}
+
+.ticket-actions a {
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-weight: 900;
+    background: #eef6ff;
+    color: var(--primary)
+}
+
+.ticket-actions a.primary {
+    background: var(--primary);
+    color: #fff
+}
+
+.ticket-actions a.danger {
+    background: #fff0f0;
+    color: var(--danger)
+}
+
+@media(max-width:720px) {
+    .ticket-head {
+        align-items: flex-start;
+        flex-direction: column
+    }
+
+    .ticket-grid,
+    .payment-box {
+        grid-template-columns: 1fr
+    }
+
+    .ticket-body {
+        padding: 22px
+    }
+
+    .ticket-actions a {
+        width: 100%;
+        text-align: center
+    }
+}

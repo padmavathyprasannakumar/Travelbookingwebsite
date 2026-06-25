@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Book Cab{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/cab_detail.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="book-detail">
+    <article class="info-card">
+        {% if cab.image %}<img src="{{ cab.image.url }}" alt="{{ cab.name }}">{% else %}<div class="image-fallback">Cab</div>{% endif %}
+        <div>
+            <h1>{{ cab.name }}</h1>
+            <p>{{ cab.city }} · {{ cab.get_vehicle_type_display }} · {{ cab.seats }} seats</p>
+            <p>{{ cab.description|default:'Comfortable city cab with transparent fare calculation.' }}</p>
+            <strong>Base ₹{{ cab.base_fare }} + ₹{{ cab.price_per_km }}/km</strong>
+        </div>
+    </article>
+    <form class="booking-form" method="post">
+        {% csrf_token %}
+        <h2>Enter Trip Details</h2>
+        <label>Pickup Location {{ form.pickup_location }}</label>
+        <label>Drop Location {{ form.drop_location }}</label>
+        <label>Pickup Date {{ form.pickup_date }}</label>
+        <label>Distance KM {{ form.distance_km }}</label>
+        <label>Special Requests {{ form.special_requests }}</label>
+        <button type="submit">Continue to Cashfree Payment</button>
+    </form>
+</section>
+{% endblock %}

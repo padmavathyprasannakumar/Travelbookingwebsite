@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cancel Booking{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/cancel_booking.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="cancel-page">
+    <form method="post" class="cancel-card">
+        {% csrf_token %}
+        <h1>Cancel Booking</h1>
+        <p>PNR: <strong>{{ booking.pnr }}</strong></p>
+        <p>Total Amount: <strong>₹{{ booking.total_amount }}</strong></p>
+        <p>This demo marks the booking as cancelled and releases hotel rooms or selected seats for future booking.</p>
+        <div class="actions">
+            <a href="{% url 'booking_detail' booking.pk %}">Go Back</a>
+            <button type="submit">Confirm Cancellation</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

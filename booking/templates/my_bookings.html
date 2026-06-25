@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Bookings{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/my_bookings.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="page-hero compact"><h1>My Trips</h1><p>View PNR, payment status and booking vouchers.</p></section>
+<section class="booking-list">
+    {% for booking in bookings %}
+        <article class="booking-row">
+            <div>
+                <span class="status {{ booking.status }}">{{ booking.get_status_display }}</span>
+                <h2>{{ booking.pnr }} · {{ booking.get_booking_type_display }}</h2>
+                {% if booking.booking_type == 'travel' and booking.travel_service %}
+                    <p>{{ booking.travel_service.source }} → {{ booking.travel_service.destination }} · {{ booking.travel_service.departure_date }}</p>
+                {% elif booking.booking_type == 'tour' and booking.tour_package %}
+                    <p>{{ booking.tour_package.title }} · {{ booking.tour_package.destination }}</p>
+                {% elif booking.booking_type == 'hotel' and booking.hotel %}
+                    <p>{{ booking.hotel.name }} · {{ booking.check_in }} to {{ booking.check_out }}</p>
+                {% elif booking.booking_type == 'cab' and booking.cab %}
+                    <p>{{ booking.pickup_location }} → {{ booking.drop_location }} · {{ booking.pickup_date }}</p>
+                {% endif %}
+            </div>
+            <div class="booking-actions">
+                <strong>₹{{ booking.total_amount }}</strong>
+                {% if booking.status == 'pending' %}<a class="pay-link" href="{% url 'payment_checkout' booking.id %}">Pay Now</a>{% endif %}
+                <a href="{% url 'booking_detail' booking.pk %}">View Details</a>
+            </div>
+        </article>
+    {% empty %}
+        <p class="empty-card">No bookings yet.</p>
+    {% endfor %}
+</section>
+{% endblock %}

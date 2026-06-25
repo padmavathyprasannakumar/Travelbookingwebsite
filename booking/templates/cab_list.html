@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Cabs | {{ site_settings.site_name|default:'myTrip Global' }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cab_list.css' %}?v=3.0">
+{% endblock %}
+
+{% block content %}
+
+<section class="cab-hero">
+    <div class="cab-hero-inner">
+        <span class="eyebrow">Ride Anywhere</span>
+        <h1>Cabs</h1>
+        <p>Book city cabs, airport transfers and outstation rides with secure Cashfree payment.</p>
+
+        <form method="get" class="cab-search">
+            <input
+                type="text"
+                name="city"
+                placeholder="Search city"
+                value="{{ request.GET.city }}"
+            >
+            <button type="submit">Search Cabs</button>
+        </form>
+    </div>
+</section>
+
+
+<section class="cab-page">
+
+    <div class="cab-heading">
+        <span>Available Rides</span>
+        <h2>Choose Your Cab</h2>
+        <p>Select a cab based on city, vehicle type, seats and fare.</p>
+    </div>
+
+    {% if cabs %}
+        <div class="cab-grid">
+            {% for cab in cabs %}
+                <article class="cab-card">
+
+                    <div class="cab-image-wrap">
+                        {% if cab.image %}
+                            <img src="{{ cab.image.url }}" alt="{{ cab.name }}">
+                        {% else %}
+                            <div class="cab-image-fallback">
+                                🚕
+                            </div>
+                        {% endif %}
+
+                        <span class="cab-badge">
+                            {{ cab.get_vehicle_type_display|default:cab.vehicle_type }} · {{ cab.seats }} Seats
+                        </span>
+                    </div>
+
+                    <div class="cab-content">
+                        <div>
+                            <h3>{{ cab.name }}</h3>
+                            <p class="cab-location">{{ cab.city }}</p>
+                        </div>
+
+                        <div class="cab-meta">
+                            <div>
+                                <small>Base Fare</small>
+                                <strong>₹{{ cab.base_fare }}</strong>
+                            </div>
+
+                            <div>
+                                <small>Per KM</small>
+                                <strong>₹{{ cab.per_km_rate }}</strong>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'cab_detail' cab.pk %}" class="cab-btn">
+                            Book Cab
+                        </a>
+                    </div>
+
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h2>No cabs found</h2>
+            <p>Cabs will appear here once they are added from the admin dashboard.</p>
+
+            {% if user.is_staff %}
+                <a href="/admin/booking/cab/add/" class="btn-primary">
+                    Add Cab
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}

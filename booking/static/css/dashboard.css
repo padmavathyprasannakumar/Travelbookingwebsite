@@ -1,0 +1,66 @@
+.dashboard-page {
+    width: 88%;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 12px 35px rgba(27, 55, 91, .09)
+}
+
+.dashboard-page h1 {
+    font-size: 36px;
+    margin-top: 0
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin: 24px 0
+}
+
+.stat-grid div {
+    background: #f7fbff;
+    border: 1px solid #e2ebf5;
+    border-radius: 16px;
+    padding: 20px
+}
+
+.stat-grid small {
+    display: block;
+    color: #667084
+}
+
+.stat-grid strong {
+    font-size: 30px;
+    color: #0875e1
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0 30px
+}
+
+th,
+td {
+    text-align: left;
+    border-bottom: 1px solid #e6eef8;
+    padding: 13px
+}
+
+th {
+    background: #f7fbff;
+    color: #536071
+}
+
+@media(max-width:850px) {
+    .stat-grid {
+        grid-template-columns: 1fr
+    }
+
+    table {
+        display: block;
+        overflow: auto
+    }
+}

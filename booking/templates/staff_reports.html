@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Travel Reports{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/staff_reports.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="dashboard-page">
+    <h1>Travel Reports</h1>
+    <p>Cashfree payment, tour package and booking summary. <span class="admin-badge">Admin only</span></p>
+    <div class="stat-grid">
+        <div><small>Total Bookings</small><strong>{{ total_bookings }}</strong></div>
+        <div><small>Paid</small><strong>{{ confirmed_bookings }}</strong></div>
+        <div><small>Pending</small><strong>{{ pending_bookings }}</strong></div>
+        <div><small>Cancelled</small><strong>{{ cancelled_bookings }}</strong></div>
+        <div><small>Revenue</small><strong>₹{{ revenue|floatformat:2 }}</strong></div>
+    </div>
+    <h2>Booking Type Summary</h2>
+    <div class="report-table-wrap">
+    <table>
+        <thead><tr><th>Type</th><th>Bookings</th><th>Revenue</th></tr></thead>
+        <tbody>
+            {% for row in by_type %}
+                <tr><td>{{ row.booking_type|title }}</td><td>{{ row.count }}</td><td>₹{{ row.revenue|default:'0.00'|floatformat:2 }}</td></tr>
+            {% empty %}
+                <tr><td colspan="3">No bookings yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <h2>Latest Bookings</h2>
+    <div class="report-table-wrap">
+    <table>
+        <thead><tr><th>PNR</th><th>User</th><th>Type</th><th>Status</th><th>Payment</th><th>Amount</th></tr></thead>
+        <tbody>
+            {% for booking in latest_bookings %}
+                <tr><td>{{ booking.pnr }}</td><td>{{ booking.user.username }}</td><td>{{ booking.get_booking_type_display }}</td><td>{{ booking.get_status_display }}</td><td>{{ booking.get_payment_status_display }}</td><td>₹{{ booking.total_amount|floatformat:2 }}</td></tr>
+            {% empty %}
+                <tr><td colspan="6">No bookings yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</section>
+{% endblock %}

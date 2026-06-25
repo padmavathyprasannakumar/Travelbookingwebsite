@@ -1,0 +1,311 @@
+/* ================================
+   Cab List Page
+================================ */
+
+.cab-hero {
+    background:
+        radial-gradient(circle at 15% 15%, rgba(255, 255, 255, .22), transparent 26%),
+        linear-gradient(135deg, #063a83 0%, #0875e1 65%, #29b8ff 100%);
+    color: #ffffff;
+    padding: 78px 0 90px;
+}
+
+.cab-hero-inner {
+    width: var(--container);
+    margin: 0 auto;
+}
+
+.cab-hero .eyebrow {
+    background: rgba(255, 255, 255, .92);
+    color: #075cab;
+    border-color: rgba(255, 255, 255, .65);
+}
+
+.cab-hero h1 {
+    font-size: clamp(46px, 7vw, 78px);
+    line-height: 1;
+    letter-spacing: -.06em;
+    margin: 18px 0 14px;
+}
+
+.cab-hero p {
+    color: #eaf4ff;
+    font-size: 18px;
+    max-width: 680px;
+    margin: 0;
+}
+
+.cab-search {
+    margin-top: 26px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cab-search input {
+    width: min(260px, 100%);
+    border: 0;
+    outline: none;
+    border-radius: 15px;
+    padding: 15px 16px;
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 700;
+    box-shadow: 0 14px 30px rgba(15, 35, 66, .12);
+}
+
+.cab-search button {
+    border: 0;
+    border-radius: 15px;
+    padding: 15px 20px;
+    background: #ffffff;
+    color: #075cab;
+    font-weight: 950;
+    box-shadow: 0 14px 30px rgba(15, 35, 66, .12);
+    transition: .18s ease;
+}
+
+.cab-search button:hover {
+    transform: translateY(-2px);
+}
+
+
+/* Page body */
+
+.cab-page {
+    width: var(--container);
+    margin: 58px auto 70px;
+}
+
+.cab-heading {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.cab-heading span {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 950;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+}
+
+.cab-heading h2 {
+    font-size: clamp(32px, 4vw, 48px);
+    letter-spacing: -.045em;
+    margin: 8px 0;
+}
+
+.cab-heading p {
+    color: var(--muted);
+    margin: 0;
+    font-size: 17px;
+}
+
+
+/* Cab cards */
+
+.cab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+    align-items: stretch;
+}
+
+.cab-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, .95);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 16px 38px rgba(15, 35, 66, .10);
+    transition: .22s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.cab-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 22px 50px rgba(15, 35, 66, .16);
+}
+
+.cab-image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #eaf4ff;
+}
+
+.cab-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cab-image-fallback {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-size: 56px;
+    background: linear-gradient(135deg, #eaf4ff, #d8ecff);
+}
+
+.cab-badge {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .94);
+    color: #075cab;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 950;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    box-shadow: 0 10px 22px rgba(15, 35, 66, .12);
+}
+
+.cab-content {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: 1;
+}
+
+.cab-content h3 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    line-height: 1.15;
+    letter-spacing: -.03em;
+}
+
+.cab-location {
+    margin: 0;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.cab-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.cab-meta div {
+    background: #f4f8fc;
+    border: 1px solid #dce6f2;
+    border-radius: 18px;
+    padding: 14px;
+}
+
+.cab-meta small {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.cab-meta strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--success);
+    font-size: 20px;
+    font-weight: 950;
+}
+
+.cab-btn {
+    margin-top: auto;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-radius: 16px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #19a4ff, #0b7cff);
+    color: #ffffff;
+    font-weight: 950;
+    box-shadow: 0 14px 28px rgba(11, 124, 255, .24);
+    transition: .18s ease;
+}
+
+.cab-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 34px rgba(11, 124, 255, .32);
+}
+
+
+/* Empty state */
+
+.empty-state {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, .95);
+    border-radius: 28px;
+    padding: 42px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-state h2 {
+    margin: 0 0 8px;
+}
+
+.empty-state p {
+    color: var(--muted);
+}
+
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .cab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .cab-hero {
+        padding: 58px 0 70px;
+    }
+
+    .cab-search {
+        display: grid;
+    }
+
+    .cab-search input,
+    .cab-search button {
+        width: 100%;
+    }
+
+    .cab-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .cab-content {
+        padding: 20px;
+    }
+
+    .cab-meta {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .cab-page {
+        margin-top: 40px;
+    }
+
+    .cab-hero h1 {
+        font-size: 44px;
+    }
+
+    .cab-heading h2 {
+        font-size: 32px;
+    }
+}

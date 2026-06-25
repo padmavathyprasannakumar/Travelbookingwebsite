@@ -1,0 +1,99 @@
+
+.dashboard-page{
+    width:min(1120px,92vw);
+    margin:42px auto;
+    background:#fff;
+    border:1px solid #e6eef8;
+    border-radius:26px;
+    padding:34px;
+    box-shadow:0 18px 55px rgba(15,40,75,.10);
+}
+.dashboard-page h1{
+    font-size:clamp(32px,5vw,50px);
+    line-height:1.05;
+    margin:0 0 10px;
+    color:#0b1730;
+}
+.dashboard-page p{
+    color:#5f6f89;
+    margin:0 0 22px;
+    font-size:16px;
+}
+.admin-badge{
+    display:inline-flex;
+    align-items:center;
+    margin-left:8px;
+    padding:5px 10px;
+    border-radius:999px;
+    background:#eef6ff;
+    color:#0875e1;
+    font-weight:800;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+.stat-grid{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:16px;
+    margin:26px 0 30px;
+}
+.stat-grid div{
+    min-width:0;
+    background:linear-gradient(180deg,#fbfdff,#f5f9fe);
+    border:1px solid #dfeaf6;
+    border-radius:18px;
+    padding:20px;
+}
+.stat-grid small{
+    display:block;
+    color:#5c6a80;
+    font-weight:800;
+    margin-bottom:10px;
+}
+.stat-grid strong{
+    display:block;
+    color:#0875e1;
+    font-size:clamp(24px,2.4vw,34px);
+    line-height:1.15;
+    font-weight:900;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.dashboard-page h2{
+    margin:28px 0 14px;
+    font-size:24px;
+    color:#101828;
+}
+.report-table-wrap{
+    overflow-x:auto;
+    border:1px solid #e6eef8;
+    border-radius:16px;
+    margin:14px 0 28px;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+}
+th,td{
+    text-align:left;
+    border-bottom:1px solid #edf2f7;
+    padding:14px 16px;
+    color:#172033;
+}
+th{
+    background:#f7fbff;
+    color:#536071;
+    font-weight:900;
+}
+tr:last-child td{border-bottom:0}
+@media(max-width:1050px){
+    .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+    .dashboard-page{padding:22px;margin:24px auto;border-radius:20px}
+    .stat-grid{grid-template-columns:1fr}
+    .admin-badge{margin:8px 0 0;display:inline-flex}
+}

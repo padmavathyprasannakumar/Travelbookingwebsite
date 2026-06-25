@@ -1,0 +1,66 @@
+.cancel-page {
+    min-height: calc(100vh - 170px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 5%;
+    background: #fff8f8
+}
+
+.cancel-card {
+    width: min(560px, 100%);
+    background: #fff;
+    border-radius: 22px;
+    padding: 34px;
+    box-shadow: 0 14px 45px rgba(91, 24, 24, .12);
+    text-align: center
+}
+
+.cancel-card h1 {
+    margin: 0 0 16px;
+    color: #c22525
+}
+
+.cancel-card p {
+    color: #5d6879;
+    line-height: 1.7
+}
+
+.actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 24px
+}
+
+.actions a,
+.actions button {
+    border: 0;
+    border-radius: 12px;
+    padding: 13px 18px;
+    font-weight: 900
+}
+
+.actions a {
+    background: #f0f5fb;
+    color: #172033
+}
+
+.actions button {
+    background: #c22525;
+    color: #fff;
+    cursor: pointer
+}
+
+@media(max-width:600px) {
+    .actions {
+        display: block
+    }
+
+    .actions a,
+    .actions button {
+        display: block;
+        width: 100%;
+        margin: 10px 0
+    }
+}

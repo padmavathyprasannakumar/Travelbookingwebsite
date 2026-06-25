@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Hotels | {{ site_settings.site_name|default:'myTrip Global' }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/hotel_list.css' %}?v=30.0">{% endblock %}
+{% block content %}
+<section class="hotel-hero">
+    <div class="hotel-hero-inner">
+        <span class="eyebrow hotel-eyebrow">Stay comfortably</span>
+        <h1>Find your perfect hotel stay</h1>
+        <p>Search rooms, compare prices and reserve hotels with secure Cashfree payment.</p>
+
+        <form class="hotel-search-card" method="get">
+            <label for="citySearch">Destination / City</label>
+            <div class="hotel-search-row">
+                <input id="citySearch" type="text" name="city" placeholder="Search city, area or hotel" value="{{ city }}">
+                <button type="submit">Search Hotels</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="hotel-listing-section">
+    <div class="hotel-section-head">
+        <span>Available stays</span>
+        <h2>Popular hotels for your trip</h2>
+        <p>All hotel details, images, rooms and pricing are managed from the admin dashboard.</p>
+    </div>
+
+    <div class="hotels-grid">
+        {% for hotel in hotels %}
+            <article class="hotel-card">
+                <div class="hotel-image-wrap">
+                    {% if hotel.image %}
+                        <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}">
+                    {% else %}
+                        <div class="hotel-image-fallback">Hotel</div>
+                    {% endif %}
+                    <span class="hotel-rating">{{ hotel.rating|floatformat:1 }}★ rating</span>
+                </div>
+
+                <div class="hotel-card-body">
+                    <div class="hotel-meta-row">
+                        <span>{{ hotel.city }}</span>
+                        <span>{{ hotel.rooms_available }} rooms left</span>
+                    </div>
+
+                    <h3>{{ hotel.name }}</h3>
+                    <p class="hotel-location">{{ hotel.address }}</p>
+
+                    <div class="hotel-card-bottom">
+                        <div class="hotel-price">
+                            <small>Starts from</small>
+                            <strong>₹{{ hotel.price_per_night }}<span>/night</span></strong>
+                        </div>
+                        <a class="hotel-action" href="{% url 'hotel_detail' hotel.pk %}">View Hotel</a>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <div class="hotel-empty-state">
+                <h2>No hotels found</h2>
+                {% if user.is_staff %}
+                    <p>Add hotels from <strong>Django Admin → Hotels</strong>. Your new hotels will automatically show here.</p>
+                    <a class="hotel-action" href="/admin/booking/hotel/add/">Add Hotel</a>
+                {% else %}
+                    <p>Hotels will be available soon. Please try another city.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

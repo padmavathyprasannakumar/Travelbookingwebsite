@@ -1,0 +1,410 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ site_settings.site_name|default:'myTrip Global' }} | Travel Booking
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}?v=22.0">
+{% endblock %}
+
+{% block content %}
+
+{% with first_banner=banners.0 %}
+<section
+    class="home-hero"
+    style="
+        {% if site_settings.hero_image %}
+            background-image:
+            linear-gradient(110deg, rgba(2,24,57,.90), rgba(2,70,145,.70)),
+            url('{{ site_settings.hero_image.url }}');
+        {% elif first_banner.image %}
+            background-image:
+            linear-gradient(110deg, rgba(2,24,57,.90), rgba(2,70,145,.70)),
+            url('{{ first_banner.image.url }}');
+        {% endif %}
+    "
+>
+    <div class="home-hero-inner">
+
+        <span class="eyebrow">Travel Booking</span>
+
+        <h1>
+            {{ site_settings.hero_title|default:'Book flights, hotels, tours and cabs in one place' }}
+        </h1>
+
+        <p>
+            {{ site_settings.hero_subtitle|default:'Search routes, select seats, choose tour packages and pay securely online with Cashfree.' }}
+        </p>
+
+        <div class="hero-actions">
+            <a href="#bookingSearch" class="btn-primary">Start Booking</a>
+            <a href="{% url 'tour_list' %}" class="btn-light">Explore Tours</a>
+        </div>
+    </div>
+</section>
+{% endwith %}
+
+
+<!-- SEARCH CARD -->
+<section class="booking-search-card" id="bookingSearch">
+
+    <!-- Direct navigation buttons -->
+    <div class="service-tabs" aria-label="Travel services">
+        <a href="{% url 'flight_list' %}">✈ Flights</a>
+        <a href="{% url 'bus_list' %}">🚌 Buses</a>
+        <a href="{% url 'train_list' %}">🚆 Trains</a>
+        <a href="{% url 'tour_list' %}">🧭 Tours</a>
+        <a href="{% url 'hotel_list' %}">🏨 Hotels</a>
+        <a href="{% url 'cab_list' %}">🚕 Cabs</a>
+    </div>
+
+    <!-- Search form -->
+    <form action="{% url 'search_results' %}" method="get" class="search-grid">
+
+        <label>
+            <span>Service</span>
+            {{ form.service_type }}
+        </label>
+
+        <label>
+            <span>From</span>
+            {{ form.source }}
+        </label>
+
+        <label>
+            <span>To</span>
+            {{ form.destination }}
+        </label>
+
+        <label>
+            <span>Departure</span>
+            {{ form.departure_date }}
+        </label>
+
+        <label>
+            <span>Travellers</span>
+            {{ form.travellers }}
+        </label>
+
+        <button type="submit">Search</button>
+    </form>
+</section>
+
+
+<!-- FLIGHTS / BUSES / TRAINS -->
+{% if flights or buses or trains or user.is_staff %}
+<section class="section-wrap travel-showcase">
+
+    <div class="section-heading">
+        <span>Live From Admin</span>
+        <h2>Flights, Buses & Trains</h2>
+        <p>Routes, schedules, seats and prices are managed from the Django admin dashboard.</p>
+    </div>
+
+    <div class="travel-columns">
+
+        <!-- Flights -->
+        <div class="travel-column">
+            <div class="column-title">
+                <span>✈</span>
+                <h3>Flights</h3>
+                <a href="{% url 'flight_list' %}">View all</a>
+            </div>
+
+            {% for service in flights %}
+                <a class="service-card" href="{% url 'travel_detail' service.pk %}">
+                    <div>
+                        <strong>{{ service.source }} → {{ service.destination }}</strong>
+                        <small>{{ service.operator_name }}</small>
+                    </div>
+
+                    <div class="service-meta">
+                        <span>{{ service.departure_date }}</span>
+                        <b>₹{{ service.base_price }}</b>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="empty-mini">
+                    {% if user.is_staff %}
+                        <a href="/admin/booking/travelservice/add/">Add flight details</a>
+                    {% else %}
+                        Flights coming soon.
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <!-- Buses -->
+        <div class="travel-column">
+            <div class="column-title">
+                <span>🚌</span>
+                <h3>Buses</h3>
+                <a href="{% url 'bus_list' %}">View all</a>
+            </div>
+
+            {% for service in buses %}
+                <a class="service-card" href="{% url 'travel_detail' service.pk %}">
+                    <div>
+                        <strong>{{ service.source }} → {{ service.destination }}</strong>
+                        <small>{{ service.operator_name }}</small>
+                    </div>
+
+                    <div class="service-meta">
+                        <span>{{ service.departure_date }}</span>
+                        <b>₹{{ service.base_price }}</b>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="empty-mini">
+                    {% if user.is_staff %}
+                        <a href="/admin/booking/travelservice/add/">Add bus details</a>
+                    {% else %}
+                        Buses coming soon.
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <!-- Trains -->
+        <div class="travel-column">
+            <div class="column-title">
+                <span>🚆</span>
+                <h3>Trains</h3>
+                <a href="{% url 'train_list' %}">View all</a>
+            </div>
+
+            {% for service in trains %}
+                <a class="service-card" href="{% url 'travel_detail' service.pk %}">
+                    <div>
+                        <strong>{{ service.source }} → {{ service.destination }}</strong>
+                        <small>{{ service.operator_name }}</small>
+                    </div>
+
+                    <div class="service-meta">
+                        <span>{{ service.departure_date }}</span>
+                        <b>₹{{ service.base_price }}</b>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="empty-mini">
+                    {% if user.is_staff %}
+                        <a href="/admin/booking/travelservice/add/">Add train details</a>
+                    {% else %}
+                        Trains coming soon.
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+{% endif %}
+
+
+<!-- OFFERS -->
+{% if offers %}
+<section class="section-wrap">
+
+    <div class="section-heading">
+        <span>Special Deals</span>
+        <h2>Latest Offers</h2>
+        <p>Save more on tours, hotels, cabs and travel bookings.</p>
+    </div>
+
+    <div class="offer-grid">
+        {% for offer in offers %}
+            <article class="offer-card">
+
+                {% if offer.image %}
+                    <img src="{{ offer.image.url }}" alt="{{ offer.title }}">
+                {% else %}
+                    <div class="image-fallback">{{ offer.get_offer_type_display }}</div>
+                {% endif %}
+
+                <div class="card-body">
+                    <small>{{ offer.get_offer_type_display }}</small>
+                    <h3>{{ offer.title }}</h3>
+                    <p>{{ offer.description|truncatewords:18 }}</p>
+
+                    {% if offer.discount_text %}
+                        <strong>{{ offer.discount_text }}</strong>
+                    {% endif %}
+
+                    {% if offer.coupon_code %}
+                        <span class="coupon">{{ offer.coupon_code }}</span>
+                    {% endif %}
+
+                    {% if offer.button_link %}
+                        <a class="text-link" href="{{ offer.button_link }}">
+                            {{ offer.button_text|default:'Book Now' }}
+                        </a>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+
+<!-- TOUR PACKAGES -->
+{% if tour_packages %}
+<section class="section-wrap section-soft">
+
+    <div class="section-heading">
+        <span>Packages</span>
+        <h2>Featured Tour Packages</h2>
+        <p>Handpicked packages for families, honeymoon trips, weekend breaks and adventures.</p>
+    </div>
+
+    <div class="package-grid">
+        {% for package in tour_packages %}
+            <a class="package-card" href="{% url 'tour_detail' package.pk %}">
+
+                {% if package.image %}
+                    <img src="{{ package.image.url }}" alt="{{ package.title }}">
+                {% else %}
+                    <div class="image-fallback">Tour</div>
+                {% endif %}
+
+                <div class="card-body">
+                    <small>
+                        {{ package.get_category_display }}
+                        · {{ package.duration_days }} Days / {{ package.duration_nights }} Nights
+                    </small>
+
+                    <h3>{{ package.title }}</h3>
+                    <p>{{ package.destination }}, {{ package.country }}</p>
+
+                    <strong>₹{{ package.price_per_person }} / person</strong>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+
+<!-- DESTINATIONS -->
+{% if destinations %}
+<section class="section-wrap">
+
+    <div class="section-heading">
+        <span>Destinations</span>
+        <h2>Popular Places</h2>
+        <p>Explore top destinations managed directly from admin dashboard.</p>
+    </div>
+
+    <div class="destination-grid">
+        {% for destination in destinations %}
+            <article class="destination-card">
+
+                {% if destination.image %}
+                    <img src="{{ destination.image.url }}" alt="{{ destination.name }}">
+                {% else %}
+                    <div class="image-fallback">{{ destination.name|slice:':1' }}</div>
+                {% endif %}
+
+                <div>
+                    <h3>{{ destination.name }}</h3>
+                    <p>{{ destination.country }}</p>
+
+                    {% if destination.starting_price %}
+                        <strong>From ₹{{ destination.starting_price }}</strong>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+
+<!-- HOTELS AND CABS -->
+{% if hotels or cabs %}
+<section class="section-wrap split-section">
+
+    {% if hotels %}
+    <div>
+        <div class="section-heading left">
+            <span>Stay</span>
+            <h2>Hotels</h2>
+        </div>
+
+        <div class="mini-grid">
+            {% for hotel in hotels %}
+                <a class="mini-card" href="{% url 'hotel_detail' hotel.pk %}">
+                    <h3>{{ hotel.name }}</h3>
+                    <p>{{ hotel.city }} · {{ hotel.rating }}★</p>
+                    <strong>₹{{ hotel.price_per_night }}/night</strong>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% if cabs %}
+    <div>
+        <div class="section-heading left">
+            <span>Rides</span>
+            <h2>Cabs</h2>
+        </div>
+
+        <div class="mini-grid">
+            {% for cab in cabs %}
+                <a class="mini-card" href="{% url 'cab_detail' cab.pk %}">
+                    <h3>{{ cab.name }}</h3>
+                    <p>{{ cab.city }} · {{ cab.get_vehicle_type_display }}</p>
+                    <strong>₹{{ cab.base_fare }} base fare</strong>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</section>
+{% endif %}
+
+
+<!-- FAQ -->
+{% if faqs %}
+<section class="section-wrap faq-section">
+
+    <div class="section-heading">
+        <span>Help</span>
+        <h2>Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-grid">
+        {% for faq in faqs %}
+            <article>
+                <h3>{{ faq.question }}</h3>
+                <p>{{ faq.answer }}</p>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+
+<!-- STAFF EMPTY STATE -->
+{% if not offers and not tour_packages and not destinations and not hotels and not cabs and not flights and not buses and not trains and user.is_staff %}
+<section class="section-wrap">
+
+    <div class="empty-state">
+        <h2>Start adding website content</h2>
+        <p>
+            Add flights, buses, trains, tours, offers, destinations, hotels and cabs from the Django admin dashboard.
+        </p>
+
+        <a class="btn-primary" href="/admin/">Open Admin Dashboard</a>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

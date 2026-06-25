@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/login.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="auth-page">
+    <form class="auth-card" method="post">
+        {% csrf_token %}
+        <h1>Login</h1>
+        <p>Access your bookings, PNR details and cancellations.</p>
+        {{ form.non_field_errors }}
+        <label>Username {{ form.username }}</label>
+        <label>Password {{ form.password }}</label>
+        <button type="submit">Login</button>
+        <p class="auth-switch">New user? <a href="{% url 'signup' %}">Create account</a></p>
+    </form>
+</section>
+{% endblock %}

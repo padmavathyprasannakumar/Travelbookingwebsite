@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Booking Ticket{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/booking_detail.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="ticket-page">
+    <article class="ticket-card">
+        <div class="ticket-head">
+            <div>
+                <small>PNR NUMBER</small>
+                <h1>{{ booking.pnr }}</h1>
+            </div>
+            <span class="status {{ booking.status }}">{{ booking.get_status_display }}</span>
+        </div>
+        <div class="ticket-body">
+            {% if booking.booking_type == 'travel' and booking.travel_service %}
+                <h2>{{ booking.travel_service.get_service_type_display }} Ticket</h2>
+                <p>{{ booking.travel_service.operator_name }}</p>
+                <div class="ticket-grid">
+                    <div><small>From</small><strong>{{ booking.travel_service.source }}</strong></div>
+                    <div><small>To</small><strong>{{ booking.travel_service.destination }}</strong></div>
+                    <div><small>Departure</small><strong>{{ booking.travel_service.departure_date }} · {{ booking.travel_service.departure_time }}</strong></div>
+                    <div><small>Seats</small><strong>{{ booking.selected_seats|join:', ' }}</strong></div>
+                </div>
+            {% elif booking.booking_type == 'tour' and booking.tour_package %}
+                <h2>Tour Package Voucher</h2>
+                <p>{{ booking.tour_package.title }} · {{ booking.tour_package.destination }}</p>
+                <div class="ticket-grid">
+                    <div><small>Duration</small><strong>{{ booking.tour_package.duration_label }}</strong></div>
+                    <div><small>Travel Date</small><strong>{{ booking.tour_travel_date|default:'Flexible' }}</strong></div>
+                    <div><small>Travellers</small><strong>{{ booking.travellers }}</strong></div>
+                    <div><small>Category</small><strong>{{ booking.tour_package.get_category_display }}</strong></div>
+                </div>
+            {% elif booking.booking_type == 'hotel' and booking.hotel %}
+                <h2>Hotel Voucher</h2>
+                <p>{{ booking.hotel.name }}, {{ booking.hotel.city }}</p>
+                <div class="ticket-grid">
+                    <div><small>Check-in</small><strong>{{ booking.check_in }}</strong></div>
+                    <div><small>Check-out</small><strong>{{ booking.check_out }}</strong></div>
+                    <div><small>Rooms</small><strong>{{ booking.rooms }}</strong></div>
+                    <div><small>Travellers</small><strong>{{ booking.travellers }}</strong></div>
+                </div>
+            {% elif booking.booking_type == 'cab' and booking.cab %}
+                <h2>Cab Voucher</h2>
+                <p>{{ booking.cab.name }} · {{ booking.cab.get_vehicle_type_display }}</p>
+                <div class="ticket-grid">
+                    <div><small>Pickup</small><strong>{{ booking.pickup_location }}</strong></div>
+                    <div><small>Drop</small><strong>{{ booking.drop_location }}</strong></div>
+                    <div><small>Date</small><strong>{{ booking.pickup_date }}</strong></div>
+                    <div><small>Distance</small><strong>{{ booking.distance_km }} km</strong></div>
+                </div>
+            {% endif %}
+            {% if booking.special_requests %}<p class="special"><strong>Special requests:</strong> {{ booking.special_requests }}</p>{% endif %}
+            <div class="payment-box">
+                <div><small>{% if booking.status == 'paid' %}Total Paid{% else %}Total Amount{% endif %}</small><strong>₹{{ booking.total_amount }}</strong></div>
+                <div><small>Payment Status</small><strong>{{ booking.get_payment_status_display }}</strong></div>
+                {% if booking.payment %}<div><small>Transaction</small><strong>{{ booking.payment.transaction_id }}</strong></div>{% endif %}
+            </div>
+            <div class="ticket-actions">
+                <a href="{% url 'my_bookings' %}">Back to My Trips</a>
+                {% if booking.status == 'pending' %}<a class="primary" href="{% url 'payment_checkout' booking.id %}">Pay Now</a>{% endif %}
+                {% if booking.status == 'paid' or booking.status == 'pending' %}<a class="danger" href="{% url 'cancel_booking' booking.pk %}">Cancel Booking</a>{% endif %}
+            </div>
+        </div>
+    </article>
+</section>
+{% endblock %}

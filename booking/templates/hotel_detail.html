@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Book Hotel{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/hotel_detail.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="book-detail">
+    <article class="info-card">
+        {% if hotel.image %}<img src="{{ hotel.image.url }}" alt="{{ hotel.name }}">{% else %}<div class="image-fallback">Hotel</div>{% endif %}
+        <div>
+            <h1>{{ hotel.name }}</h1>
+            <p>{{ hotel.city }} · {{ hotel.rating }}★</p>
+            <p>{{ hotel.address }}</p>
+            <p>{{ hotel.description|default:'Comfortable stay with instant booking confirmation.' }}</p>
+            <strong>₹{{ hotel.price_per_night }} per night</strong>
+            <p>{{ hotel.rooms_available }} rooms available</p>
+        </div>
+    </article>
+    <form class="booking-form" method="post">
+        {% csrf_token %}
+        <h2>Enter Stay Details</h2>
+        {{ form.non_field_errors }}
+        <label>Check-in {{ form.check_in }}</label>
+        <label>Check-out {{ form.check_out }}</label>
+        <label>Rooms {{ form.rooms }}</label>
+        <label>Travellers {{ form.travellers }}</label>
+        <label>Special Requests {{ form.special_requests }}</label>
+        <button type="submit">Continue to Cashfree Payment</button>
+    </form>
+</section>
+{% endblock %}

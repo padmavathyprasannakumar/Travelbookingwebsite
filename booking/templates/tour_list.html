@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Tour Packages | {{ site_settings.site_name|default:'myTrip Global' }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/tour.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="page-hero compact">
+    <div class="page-hero-inner">
+        <span class="eyebrow">Explore curated trips</span>
+        <h1>Tour Packages</h1>
+        <p>Choose tour packages with itinerary, inclusions, pricing and secure Cashfree payment.</p>
+        <form class="inline-search" method="get">
+            <input type="text" name="destination" placeholder="Search destination" value="{{ destination }}">
+            <select name="category">
+                <option value="">All categories</option>
+                {% for key,label in categories %}<option value="{{ key }}" {% if category == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+            <button type="submit">Search Tours</button>
+        </form>
+    </div>
+</section>
+
+<section class="tour-page-wrap">
+    <div class="tour-grid">
+        {% for package in packages %}
+            <article class="tour-card">
+                <a class="tour-image" href="{% url 'tour_detail' package.pk %}">
+                    {% if package.image %}<img src="{{ package.image.url }}" alt="{{ package.title }}">{% else %}<div class="image-fallback">Tour</div>{% endif %}
+                </a>
+                <div class="tour-body">
+                    <span class="type-badge">{{ package.get_category_display }} · {{ package.duration_label }}</span>
+                    <h2>{{ package.title }}</h2>
+                    <p class="location">{{ package.destination }}, {{ package.country }}</p>
+                    <p>{{ package.short_description|default:package.description|truncatewords:20 }}</p>
+                    <div class="tour-meta">
+                        <strong>₹{{ package.price_per_person }}/person</strong>
+                        <small>{{ package.seats_available }} slots left</small>
+                    </div>
+                    <a class="btn-primary full" href="{% url 'tour_detail' package.pk %}">View Package</a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state full-grid">
+                <h2>No tour packages found</h2>
+                {% if user.is_staff %}<p>Add tour packages from Django Admin → Tour packages, then they will appear here automatically.</p>{% else %}<p>Packages will be available soon.</p>{% endif %}
+                {% if user.is_staff %}<a class="btn-primary" href="/admin/booking/tourpackage/add/">Add Tour Package</a>{% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

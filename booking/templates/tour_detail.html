@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ package.title }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/tour.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="tour-detail">
+    <article class="tour-hero-card">
+        {% if package.image %}<img src="{{ package.image.url }}" alt="{{ package.title }}">{% else %}<div class="tour-img large">Tour</div>{% endif %}
+        <div class="tour-summary">
+            <span>{{ package.get_category_display }} Package</span>
+            <h1>{{ package.title }}</h1>
+            <p>{{ package.destination }}, {{ package.country }} · {{ package.duration_label }}</p>
+            <p>{{ package.description|default:package.short_description }}</p>
+            <div class="price-row"><strong>₹{{ package.price_per_person }}</strong><small>per person</small></div>
+            <div class="detail-pills">
+                <span>{{ package.seats_available }} slots available</span>
+                {% if package.start_date %}<span>Starts {{ package.start_date }}</span>{% endif %}
+                {% if package.end_date %}<span>Ends {{ package.end_date }}</span>{% endif %}
+            </div>
+        </div>
+    </article>
+
+    <div class="tour-content-grid">
+        <div class="tour-content">
+            {% if package.highlights_list %}
+                <section class="info-panel"><h2>Highlights</h2><ul>{% for item in package.highlights_list %}<li>{{ item }}</li>{% endfor %}</ul></section>
+            {% endif %}
+            {% if package.itinerary_list %}
+                <section class="info-panel"><h2>Itinerary</h2><ol>{% for item in package.itinerary_list %}<li>{{ item }}</li>{% endfor %}</ol></section>
+            {% endif %}
+            <section class="info-panel split">
+                <div>
+                    <h2>Inclusions</h2>
+                    {% if package.inclusions_list %}<ul>{% for item in package.inclusions_list %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p>Inclusions will be updated soon.</p>{% endif %}
+                </div>
+                <div>
+                    <h2>Exclusions</h2>
+                    {% if package.exclusions_list %}<ul>{% for item in package.exclusions_list %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p>Exclusions will be updated soon.</p>{% endif %}
+                </div>
+            </section>
+        </div>
+
+        <form class="booking-form sticky" method="post">
+            {% csrf_token %}
+            <h2>Book This Package</h2>
+            {% if form.non_field_errors %}<div class="field-error">{{ form.non_field_errors }}</div>{% endif %}
+            <label>Travel Date {{ form.travel_date }}{% for error in form.travel_date.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</label>
+            <label>Travellers {{ form.travellers }}{% for error in form.travellers.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</label>
+            <label>Special Requests {{ form.special_requests }}{% for error in form.special_requests.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</label>
+            <div class="form-note">Payment will open through Cashfree after reservation.</div>
+            <button type="submit">Continue to Payment</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

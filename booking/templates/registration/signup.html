@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Account{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/signup.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="auth-page">
+    <form class="auth-card wide" method="post">
+        {% csrf_token %}
+        <h1>Create Account</h1>
+        <p>Sign up to book tickets, hotels and cabs.</p>
+        {{ form.non_field_errors }}
+        <div class="form-grid">
+            <label>Username {{ form.username }}</label>
+            <label>Email {{ form.email }}</label>
+            <label>First Name {{ form.first_name }}</label>
+            <label>Last Name {{ form.last_name }}</label>
+            <label>Password {{ form.password1 }}</label>
+            <label>Confirm Password {{ form.password2 }}</label>
+        </div>
+        {% for field in form %}
+            {% for error in field.errors %}<p class="field-error">{{ field.label }}: {{ error }}</p>{% endfor %}
+        {% endfor %}
+        <button type="submit">Create Account</button>
+        <p class="auth-switch">Already registered? <a href="{% url 'login' %}">Login</a></p>
+    </form>
+</section>
+{% endblock %}

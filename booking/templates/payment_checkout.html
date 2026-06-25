@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Secure Payment | {{ site_settings.site_name|default:'myTrip Global' }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payment.css' %}?v=20.0">{% endblock %}
+
+{% block content %}
+<section class="checkout-page">
+    <div class="checkout-container">
+        <div class="checkout-hero">
+            <div>
+                <span class="checkout-kicker">Secure Cashfree Payment</span>
+                <h1>Complete Your Booking</h1>
+                <p>Review your booking summary and continue to Cashfree checkout. After payment, you will return to this website automatically.</p>
+            </div>
+            <div class="secure-badge"><span>🔒</span> 100% secure checkout</div>
+        </div>
+
+        <div class="checkout-grid">
+            <article class="summary-card">
+                <div class="summary-head">
+                    <div>
+                        <span>Booking Summary</span>
+                        <h2>{{ booking.get_booking_type_display }} reservation</h2>
+                    </div>
+                    <div class="pnr-box">
+                        <small>PNR Number</small>
+                        <strong>{{ booking.pnr }}</strong>
+                    </div>
+                </div>
+
+                <div class="summary-body">
+                    <div class="info-grid">
+                        <div class="info-item"><small>Booking Type</small><strong>{{ booking.get_booking_type_display }}</strong></div>
+                        <div class="info-item"><small>Payment Method</small><strong>Cashfree</strong></div>
+                        <div class="info-item"><small>Current Status</small><strong>{{ booking.get_status_display }}</strong></div>
+                        <div class="info-item"><small>Total Payable</small><strong>₹{{ booking.total_amount|floatformat:2 }}</strong></div>
+                    </div>
+                    <div class="travel-note">Please do not refresh or close the Cashfree payment window while the transaction is processing.</div>
+                </div>
+            </article>
+
+            <aside class="pay-card">
+                <h2>Payment Details</h2>
+                <p class="pay-subtitle">Your booking is reserved. Complete the payment to confirm your trip.</p>
+
+                <div class="amount-box">
+                    <small>Amount to pay</small>
+                    <strong>₹{{ booking.total_amount|floatformat:2 }}</strong>
+                    <span class="status-pill">● {{ booking.get_status_display }}</span>
+                </div>
+
+                {% if config_error %}
+                    <div class="gateway-alert error"><h3>Cashfree keys are not configured</h3><p>{{ config_error }}</p><p>Add <code>CASHFREE_CLIENT_ID</code> and <code>CASHFREE_CLIENT_SECRET</code>, then restart Django.</p></div>
+                {% elif gateway_error %}
+                    <div class="gateway-alert error"><h3>Cashfree order creation failed</h3><p>{{ gateway_error }}</p></div>
+                {% elif payment.payment_session_id %}
+                    <div class="gateway-alert success"><h3>Cashfree order is ready</h3><p>Click the button below to open Cashfree checkout.</p></div>
+                    <button id="cashfreePayBtn" type="button" class="pay-now">Pay ₹{{ booking.total_amount|floatformat:2 }} with Cashfree</button>
+                    <p id="paymentLoadingText" class="loading-text">Opening Cashfree checkout...</p>
+                {% else %}
+                    <div class="gateway-alert error"><h3>Payment session not generated</h3><p>Please refresh this page or contact support.</p></div>
+                {% endif %}
+
+                <div class="payment-actions">
+                    <a href="{% url 'booking_detail' booking.pk %}">View Booking</a>
+                    <a href="{% url 'my_bookings' %}">My Trips</a>
+                </div>
+            </aside>
+        </div>
+
+        <div class="trust-card">
+            <div class="trust-item"><b>Step 1</b><span>Booking reserved</span></div>
+            <div class="trust-item"><b>Step 2</b><span>Secure payment</span></div>
+            <div class="trust-item"><b>Step 3</b><span>Booking confirmed</span></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% if payment.payment_session_id and not config_error and not gateway_error %}
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+<script>
+    const cashfree = Cashfree({ mode: "{{ cashfree_mode|default:'sandbox' }}" });
+    const payButton = document.getElementById('cashfreePayBtn');
+    const loadingText = document.getElementById('paymentLoadingText');
+
+    if (payButton) {
+        payButton.addEventListener('click', function () {
+            payButton.disabled = true;
+            payButton.textContent = 'Opening Cashfree...';
+            if (loadingText) loadingText.classList.add('show');
+            cashfree.checkout({
+                paymentSessionId: "{{ payment.payment_session_id|escapejs }}",
+                redirectTarget: "_self"
+            });
+        });
+    }
+</script>
+{% endif %}
+{% endblock %}

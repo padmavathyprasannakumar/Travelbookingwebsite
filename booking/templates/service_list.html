@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ config.title }} | {{ site_settings.site_name|default:'myTrip Global' }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/service_list.css' %}?v=1.0">{% endblock %}
+{% block content %}
+<section class="page-hero service-hero">
+    <div class="page-hero-inner">
+        <span class="eyebrow">{{ config.eyebrow }}</span>
+        <h1>{{ config.icon }} {{ config.title }}</h1>
+        <p>{{ config.subtitle }}</p>
+
+        <form method="get" class="service-filter" aria-label="Filter {{ config.title }}">
+            <label>
+                <span>From</span>
+                <input type="text" name="source" value="{{ source }}" placeholder="From city">
+            </label>
+            <label>
+                <span>To</span>
+                <input type="text" name="destination" value="{{ destination }}" placeholder="To city">
+            </label>
+            <label>
+                <span>Date</span>
+                <input type="date" name="departure_date" value="{{ departure_date }}">
+            </label>
+            <button type="submit">Search {{ config.title }}</button>
+        </form>
+    </div>
+</section>
+
+<section class="service-page-wrap">
+    <div class="service-page-heading">
+        <div>
+            <span>Available from admin dashboard</span>
+            <h2>All {{ config.title }}</h2>
+        </div>
+        <a href="{% url 'home' %}#bookingSearch">Back to Search</a>
+    </div>
+
+    <div class="service-result-grid">
+        {% for service in services %}
+        <article class="service-result-card">
+            <div class="service-card-top">
+                <span class="service-icon">{{ config.icon }}</span>
+                <div>
+                    <span class="type-badge">{{ service.get_service_type_display }}</span>
+                    <h3>{{ service.operator_name }}</h3>
+                    <p>{{ service.title }}</p>
+                </div>
+            </div>
+
+            <div class="route-line">
+                <div>
+                    <small>From</small>
+                    <strong>{{ service.source }}</strong>
+                    <span>{{ service.departure_date }} · {{ service.departure_time }}</span>
+                </div>
+                <div class="route-duration">{{ service.duration_label }}</div>
+                <div>
+                    <small>To</small>
+                    <strong>{{ service.destination }}</strong>
+                    <span>{{ service.arrival_date }} · {{ service.arrival_time }}</span>
+                </div>
+            </div>
+
+            <div class="service-card-footer">
+                <div>
+                    <small>Starting from</small>
+                    <strong>₹{{ service.base_price }}</strong>
+                    <span>{{ service.total_seats }} seats</span>
+                </div>
+                <a href="{% url 'travel_detail' service.pk %}">View Details</a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="empty-card full-grid">
+            <h2>No {{ config.title|lower }} available</h2>
+            {% if user.is_staff %}
+                <p>Add {{ config.title|lower }} from Django Admin → Travel Services.</p>
+                <a class="primary-btn" href="/admin/booking/travelservice/add/">{{ config.add_label }}</a>
+            {% else %}
+                <p>Please check again later or try another travel type.</p>
+                <a class="primary-btn" href="{% url 'home' %}#bookingSearch">Search another trip</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

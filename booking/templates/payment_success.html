@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Payment Success{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payment_success.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="payment-success-page">
+    <article class="payment-card">
+        <div class="success-icon">✓</div>
+        <h2>Payment Successful</h2>
+        <p>Your booking is confirmed.</p>
+        <p><strong>PNR:</strong> {{ booking.pnr }}</p>
+        <p><strong>Amount Paid:</strong> ₹{{ booking.total_amount }}</p>
+        {% if booking.payment %}<p><strong>Transaction:</strong> {{ booking.payment.transaction_id }}</p>{% endif %}
+        <a class="btn-success" href="{% url 'booking_detail' booking.pk %}">View Ticket / Voucher</a>
+    </article>
+</section>
+{% endblock %}

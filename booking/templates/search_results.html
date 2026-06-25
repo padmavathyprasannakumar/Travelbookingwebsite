@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Search Results{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/search_results.css' %}?v=12.0">{% endblock %}
+{% block content %}
+<section class="page-hero compact">
+    <h1>Available Travel Options</h1>
+    <p>Choose your preferred service and continue to seat selection.</p>
+</section>
+<section class="results-wrap">
+    {% if form.errors %}
+        <div class="error-box">Please enter valid search details.</div>
+    {% endif %}
+    {% for service in services %}
+        <article class="result-card">
+            <div>
+                <span class="type-badge">{{ service.get_service_type_display }}</span>
+                <h2>{{ service.operator_name }}</h2>
+                <p>{{ service.title }}</p>
+            </div>
+            <div class="route-block">
+                <strong>{{ service.source }}</strong>
+                <span>{{ service.departure_date }} · {{ service.departure_time }}</span>
+            </div>
+            <div class="duration">{{ service.duration_label }}</div>
+            <div class="route-block">
+                <strong>{{ service.destination }}</strong>
+                <span>{{ service.arrival_date }} · {{ service.arrival_time }}</span>
+            </div>
+            <div class="price-block">
+                <strong>₹{{ service.base_price }}</strong>
+                <a href="{% url 'travel_detail' service.pk %}">View Details</a>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty-card">
+            <h2>No result found</h2>
+            {% if user.is_staff %}<p>Add matching flights, buses or trains in Django Admin, then search again.</p>{% else %}<p>No matching trips found. Try a different route or date.</p>{% endif %}
+            <a href="{% url 'home' %}">Back to Search</a>
+        </div>
+    {% endfor %}
+</section>
+{% endblock %}

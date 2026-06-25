@@ -1,0 +1,196 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}{{ site_settings.site_name|default:'myTrip Global' }}{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=25.0">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+
+        <!-- Logo only -->
+        <a class="brand" href="{% url 'home' %}" aria-label="Home">
+            <span class="brand-mark">
+                {{ site_settings.logo_text|default:'myTripGlobal' }}
+            </span>
+        </a>
+
+        <!-- Mobile menu toggle -->
+        <input type="checkbox" id="navToggle" class="nav-toggle" aria-label="Open menu">
+
+        <label for="navToggle" class="nav-toggle-label" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+
+        <!-- Navigation -->
+        <nav class="main-nav" aria-label="Main navigation">
+
+            <a href="{% url 'home' %}">Home</a>
+
+            <!-- Transport Dropdown -->
+            <details class="nav-dropdown">
+                <summary>
+                    Transport <span>▾</span>
+                </summary>
+
+                <div class="nav-dropdown-menu">
+                    <a href="{% url 'flight_list' %}">✈ Flights</a>
+                    <a href="{% url 'bus_list' %}">🚌 Buses</a>
+                    <a href="{% url 'train_list' %}">🚆 Trains</a>
+                    <a href="{% url 'cab_list' %}">🚕 Cabs</a>
+                </div>
+            </details>
+
+            <a href="{% url 'tour_list' %}">Tours</a>
+            <a href="{% url 'hotel_list' %}">Hotels</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'my_bookings' %}">My Trips</a>
+
+                {% if user.is_staff or user.is_superuser %}
+                    <a href="{% url 'staff_reports' %}">Reports</a>
+                {% endif %}
+
+                <form class="logout-form" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            {% else %}
+                <a class="login-link" href="{% url 'login' %}">Login</a>
+                <a class="signup-link" href="{% url 'signup' %}">Sign up</a>
+            {% endif %}
+        </nav>
+
+    </div>
+</header>
+
+
+{% if messages %}
+    <div class="message-wrap">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+
+<footer class="site-footer">
+    <div class="footer-inner footer-modern">
+
+        <!-- Footer brand -->
+        <div class="footer-brand">
+            <a class="brand footer-logo" href="{% url 'home' %}" aria-label="Home">
+                <span class="brand-mark">
+                    {{ site_settings.logo_text|default:'myTripGlobal' }}
+                </span>
+            </a>
+
+            <p>
+                {{ site_settings.footer_about|default:'Dynamic Django travel booking system with admin-managed content.' }}
+            </p>
+
+            <div class="footer-contact">
+                {% if site_settings.support_email %}
+                    <span>✉ {{ site_settings.support_email }}</span>
+                {% endif %}
+
+                {% if site_settings.support_phone %}
+                    <span>☎ {{ site_settings.support_phone }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!-- Horizontal Quick Links -->
+        <div class="footer-menu">
+            <h4>Quick Links</h4>
+
+            <div class="footer-link-row">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'flight_list' %}">Flights</a>
+                <a href="{% url 'bus_list' %}">Buses</a>
+                <a href="{% url 'train_list' %}">Trains</a>
+                <a href="{% url 'tour_list' %}">Tours</a>
+                <a href="{% url 'hotel_list' %}">Hotels</a>
+                <a href="{% url 'cab_list' %}">Cabs</a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'my_bookings' %}">My Trips</a>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!-- Admin-managed footer links -->
+        {% if footer_links %}
+            <div class="footer-menu">
+                <h4>Useful Links</h4>
+
+                <div class="footer-link-row">
+                    {% for link in footer_links %}
+                        <a href="{{ link.url }}" {% if link.open_in_new_tab %}target="_blank" rel="noopener"{% endif %}>
+                            {{ link.title }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- Social links -->
+        {% if site_settings.instagram_url or site_settings.twitter_url or site_settings.facebook_url %}
+            <div class="footer-menu">
+                <h4>Follow Us</h4>
+
+                <div class="footer-link-row">
+                    {% if site_settings.instagram_url %}
+                        <a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
+                    {% endif %}
+
+                    {% if site_settings.twitter_url %}
+                        <a href="{{ site_settings.twitter_url }}" target="_blank" rel="noopener">X</a>
+                    {% endif %}
+
+                    {% if site_settings.facebook_url %}
+                        <a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener">Facebook</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+
+    <div class="footer-bottom">
+        <span>
+            © 2026 {{ site_settings.site_name|default:'myTrip Global' }}. All rights reserved.
+        </span>
+    </div>
+</footer>
+
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

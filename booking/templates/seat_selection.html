@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Seat Selection{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/seat_selection.css' %}?v=12.0">
+{% endblock %}
+
+{% block content %}
+<section class="seat-page">
+    <div class="seat-info">
+        <span>{{ service.get_service_type_display }}</span>
+        <h1>{{ service.source }} → {{ service.destination }}</h1>
+        <p>{{ service.operator_name }} · {{ service.departure_date }} · ₹{{ service.base_price }} per seat</p>
+    </div>
+
+    <form method="post" class="seat-layout-card" id="seatForm">
+        {% csrf_token %}
+        {{ form.selected_seats }}
+
+        <div class="legend">
+            <span><b class="available"></b> Available</span>
+            <span><b class="selected"></b> Selected</span>
+            <span><b class="booked"></b> Booked</span>
+        </div>
+
+        <div class="seat-map" style="grid-template-columns: repeat({{ service.seat_columns }}, 54px);">
+            {% for seat in all_seats %}
+                <button type="button" class="seat {% if seat in unavailable %}booked{% endif %}" 
+                        data-seat="{{ seat }}" {% if seat in unavailable %}disabled{% endif %}>
+                    {{ seat }}
+                </button>
+            {% endfor %}
+        </div>
+
+        <div class="summary-panel">
+            <div>
+                <small>Selected Seats</small>
+                <strong id="selectedList">None</strong>
+            </div>
+            <div>
+                <small>Total Fare</small>
+                <strong>₹<span id="totalFare">0.00</span></strong>
+            </div>
+            <button type="submit">Pay & Generate PNR</button>
+        </div>
+    </form>
+</section>
+
+<script src="{% static 'js/seat_selection.js' %}"></script>
+{% endblock %}
