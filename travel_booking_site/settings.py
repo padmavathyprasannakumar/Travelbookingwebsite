@@ -1,6 +1,6 @@
 """
 Django settings for travel_booking_site project.
-Render deployment ready.
+Render Free deployment ready with Cloudinary media storage.
 """
 
 import os
@@ -65,6 +65,11 @@ CSRF_TRUSTED_ORIGINS = env_list(
 # --------------------------------------------------
 
 INSTALLED_APPS = [
+    # Cloudinary media storage
+    "cloudinary_storage",
+    "cloudinary",
+
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -80,7 +85,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 
-    # WhiteNoise for static files on Render
+    # WhiteNoise serves static files on Render
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -178,23 +183,49 @@ ROOT_STATIC_DIR = BASE_DIR / "static"
 if ROOT_STATIC_DIR.exists():
     STATICFILES_DIRS.append(ROOT_STATIC_DIR)
 
-# Django 6 compatible staticfiles storage setting
+
+# WhiteNoise fallback: serve files directly from app static folders too.
+# This fixes /static/css/base.css Not Found on Render Free.
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
+
+
+# --------------------------------------------------
+# Cloudinary media storage
+# --------------------------------------------------
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
+}
+
+
+# --------------------------------------------------
+# Django 6 storage configuration
+# --------------------------------------------------
+
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 
 # --------------------------------------------------
 # Media files
 # --------------------------------------------------
+# On Render Free, uploaded files should go to Cloudinary.
+# MEDIA_ROOT is kept only for local fallback compatibility.
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", str(BASE_DIR / "media"))
 
 
 # --------------------------------------------------
@@ -248,3 +279,31 @@ if not DEBUG:
 
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = "DENY"
+
+
+# --------------------------------------------------
+# Logging - show errors in Render logs
+# --------------------------------------------------
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}

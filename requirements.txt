@@ -5,3 +5,5 @@ dj-database-url
 psycopg[binary]
 requests
 Pillow
+cloudinary
+django-cloudinary-storage
